@@ -46,15 +46,15 @@ export class NgbSlide {
       <li *ngFor="let slide of slides" [id]="slide.id" [class.active]="slide.id === activeId" (click)="cycleToSelected(slide.id)"></li>
     </ol>
     <div class="carousel-inner" role="listbox">
-      <div *ngFor="let slide of slides" class="carousel-item" [class.active]="slide.id === activeId">
+      <div *ngFor="let slide of slides" class="carousel-item" [class.active]="slide.id === activeId" [ngClass]="{'slide-left':slideLeft}">
         <template [ngTemplateOutlet]="slide.tplRef"></template>
       </div>
     </div>
-    <a class="left carousel-control-prev" role="button" (click)="cycleToPrev()">
+    <a class="left carousel-control-prev" role="button" (click)="cycleToPrev(); slideLeft = true">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
-    <a class="right carousel-control-next" role="button" (click)="cycleToNext()">
+    <a class="right carousel-control-next" role="button" (click)="cycleToNext(); slideLeft = false">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
     </a>
@@ -64,6 +64,7 @@ export class NgbCarousel implements AfterContentChecked,
     OnDestroy, OnInit {
   @ContentChildren(NgbSlide) slides: QueryList<NgbSlide>;
   private _slideChangeInterval;
+  public slideLeft: boolean = false;
 
   /**
    * Amount of time in milliseconds before next slide is shown.
