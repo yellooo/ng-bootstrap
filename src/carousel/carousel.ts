@@ -66,6 +66,7 @@ export class NgbCarousel implements AfterContentChecked,
   @ContentChildren(NgbSlide) slides: QueryList<NgbSlide>;
   private _slideChangeInterval;
   public slideLeft: boolean = false;
+  public oldId: number = 0;
 
   /**
    * Amount of time in milliseconds before next slide is shown.
@@ -91,6 +92,7 @@ export class NgbCarousel implements AfterContentChecked,
     this.interval = config.interval;
     this.wrap = config.wrap;
     this.keyboard = config.keyboard;
+    this.oldId = 0;
   }
 
   ngAfterContentChecked() {
@@ -124,6 +126,7 @@ export class NgbCarousel implements AfterContentChecked,
   next() {
     this.cycleToNext();
     this._restartTimer();
+    this.slideLeft = false;
   }
 
   /**
@@ -142,8 +145,16 @@ export class NgbCarousel implements AfterContentChecked,
 
   cycleToSelected(slideIdx: string) {
     let selectedSlide = this._getSlideById(slideIdx);
+    let temp = selectedSlide.id.split('-', 3);
+    let currentId = parseInt(temp[2], 10);
     if (selectedSlide) {
       this.activeId = selectedSlide.id;
+      if (currentId < this.oldId) {
+        this.slideLeft = true;
+      } else {
+        this.slideLeft = false;
+      }
+      this.oldId = currentId;
     }
   }
 
